@@ -1,0 +1,27 @@
+
+/**
+ * 	Danger Scale --------------------------------------------------
+ */
+.danger-scale {
+    overflow: hidden;
+    margin-bottom: 30px;
+    list-style-type: none;
+}
+
+.danger-scale li {
+    border-top: 10px solid #ccc;
+    float: left;
+    color: #999;
+    font-size: 12px;
+    height: 50px;
+    width: 82.5px;
+    padding-top: 7px;
+    line-height: 14px;
+}
+
+.danger-scale li.scale1 { width: 77px; }
+.danger-scale li.scale2 { border-color: #4DB848; }
+.danger-scale li.scale3 { border-color: #FFF200; }
+.danger-scale li.scale4 { border-color: #F7931D; }
+.danger-scale li.scale5 { border-color: #ED1C23; }
+.danger-scale li.scale6 { border-color: #000000; }

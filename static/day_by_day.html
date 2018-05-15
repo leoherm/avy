@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--   Static, all zones, button steps through days
+ WORKING April 26 !!
+-->
+<html lang="en">
+<head>
+  <title>2017-8 avy</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        width: 525px;
+        height: 575px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .danger-scale {
+          overflow: hidden;
+          margin-bottom: 1px;
+          list-style-type: none;
+      }
+
+      .danger-scale li {
+          border-top: 10px solid #ccc;
+          float: left;
+          color: #999;
+          font-size: 10px;
+          text-align: center;
+          height: 30px;
+          width: 50px;
+          padding-top: 7px;
+          line-height: 14px;
+      }
+
+      .danger-scale li.scale1 {
+        width: 77px;
+        border-color: #FFFFFF;
+      }
+
+      .danger-scale li.scale2 { border-color: #4DB848; }
+      .danger-scale li.scale3 { border-color: #FFF200; }
+      .danger-scale li.scale4 { border-color: #F7931D; }
+      .danger-scale li.scale5 { border-color: #ED1C23; }
+      .danger-scale li.scale6 { border-color: #000000; }
+
+      .logo {
+        position: absolute;
+        top: 5px;
+        left: 202px;
+        width: 120px;
+        fillColor: #E6E6E6;
+        background-color: #FFFFFF;
+        opacity: 0.6;
+        filter: alpha(opacity=60); /* For IE8 and earlier */
+        z-index: 4;
+      }
+
+      .forecastDate {
+        position: relative;
+        top: -160px;
+        left: 212px;
+        width: 100px;
+        background-color: #FFFFFF;
+        text-align: center;
+        border: 1px solid black;
+        opacity: 0.6;
+        filter: alpha(opacity=60); /* For IE8 and earlier */
+        font-size: 24px;
+      }
+
+      .forwardButton {
+        position: relative;
+        top: -80px;
+        left: 225px;
+      }
+
+      .backButton {
+        position: relative;
+        top: -80px;
+        left: 150px;
+      }
+
+      .homeAbout{
+        position: relative;
+        top: -65px;
+        left: 200px;
+      }
+
+    </style>
+
+    <script type="text/javascript" src="/static/scripts/zoneRatings.js"></script>
+    <script type="text/javascript" src="/static/scripts/mwac-polys.js"></script>
+    <script type="text/javascript" src="/static/scripts/datesFile.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script> // play with fading from one day to the next
+      var map;
+      var polyOpacity = 0.7;
+      var allZones0 = [];
+      var dayCount = 0;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 44.266838, lng: -71.289224},
+          zoom: 14,
+          streetViewControl : false,
+          zoomControl: false,
+          fullscreenControl: false,
+          mapTypeControl: false,
+          mapTypeId: 'terrain'
+        });
+        // add polygons
+        for (var zoneNum = 0; zoneNum <= 19; zoneNum++){
+          var nextPoly0 = new google.maps.Polygon({
+            paths: avyZones[zoneNum],
+            id: zoneNum,
+            strokeColor : '#000000',
+            strokeOpacity: 0.8,
+            strokeWeight: 1,
+            fillColor: danger_color[zoneRating[0][zoneNum]],
+            fillOpacity: polyOpacity
+          });
+          nextPoly0.setMap(map);
+          allZones0.push(nextPoly0);
+        }
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIHM53unbwpOIVX-HedkI7tQsRfZj_DOE&callback=initMap"
+    async defer></script>
+<!--   Remove logo from map for now
+    <a href = "https://www.mountwashingtonavalanchecenter.org/">
+       <img class="logo" src="/static/images/MWAClogo2.png" alt="MWAC logo">
+    </a>
+-->
+    <ul class="danger-scale">
+      <li class="scale1"></li>
+      <li class="scale2">Low</li>
+      <li class="scale3">Moderate</li>
+      <li class="scale4">Considerable</li>
+      <li class="scale5">High</li>
+      <li class="scale6">Extreme</li>
+    </ul>
+
+    <p id = "date" class= "forecastDate"></p>
+    <script>document.getElementById("date").innerHTML=dates[dayCount];</script>
+
+    <button id = "back" class= "backButton" disabled onclick="stepBack()">Prior day</button>
+    <button id = "forward" class="forwardButton" onclick="stepForward()">Next day</button>
+
+    <script>
+      function stepForward(){            //step zone ratings forward to the next day
+        dayCount = dayCount + 1;
+        document.getElementById("date").innerHTML=dates[dayCount];
+        document.getElementById("back").disabled = false;
+        for (var zoneNum = 0; zoneNum <= 19; zoneNum++){
+          allZones0[zoneNum].setOptions({fillColor: danger_color[zoneRating[dayCount][zoneNum]]});
+        }
+      }
+      function stepBack(){            //step zone ratings back to the prior day
+        if (dayCount >= 1){
+          dayCount = dayCount - 1;
+          document.getElementById("date").innerHTML=dates[dayCount];
+          for (var zoneNum = 0; zoneNum <= 19; zoneNum++){
+            allZones0[zoneNum].setOptions({fillColor: danger_color[zoneRating[dayCount][zoneNum]]});
+          }
+        } else {
+          document.getElementById("back").disabled = true;
+        }
+      }
+    </script>
+    <div class = "homeAbout">
+    <a href ='/'>Home</a>   <a href ='/about/'>About</a>
+    </div>
+  </body>
+</html>
